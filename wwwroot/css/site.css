@@ -1,5 +1,11 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    font-feature-settings: normal;
+    font-family: ui-sans-serif,-apple-system,system-ui,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica,Apple Color Emoji,Arial,Segoe UI Emoji,Segoe UI Symbol;
+    font-variation-settings: normal;
+    --tw-bg-opacity: 1;
+    background-color: rgb(24 24 27 / var(--tw-bg-opacity));
+    color: white;
 }
 
 @media (min-width: 768px) {
@@ -19,4 +25,17 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.dark-gray {
+    background-color: #27272a;
+}
+
+.lighter-gray {
+    background-color: #3f3f46;
+}
+
+.dark {
+    --tw-bg-opacity: 1;
+    background-color: rgb(24 24 27 / var(--tw-bg-opacity));
 }

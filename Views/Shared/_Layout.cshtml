@@ -3,42 +3,37 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GeneratorClient</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>StableDiffusion Generator Client</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GeneratorClient.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GeneratorClient</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <nav class=" container-fluid navbar bg-black black dark:bg-zinc-900 shadow-md py-4 px-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="~/images/gclogo.png" alt="Logo" class="mr-3" style="width: 40px; height: 40px;" />
+                    <span class="text-xl font-bold dark:text-white">StableDiffusion Generator Client</span>
+                </div>
+                <div class="space-x-4">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 p-8">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="bg-black border-top footer text-muted text-center">
         <div class="container">
-            &copy; 2024 - GeneratorClient - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &nbsp;
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

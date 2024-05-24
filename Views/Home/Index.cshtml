@@ -1,8 +1,150 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "SD Generator Client";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="min-h-screen flex flex-col bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white transition-all duration-300">
+    <div class="flex flex-row flex-grow">
+        <div class="w-1/8 p-4 bg-neutral-700 dark:bg-zinc-700 transition-all duration-300">
+            @* <partial name="_SectionsPartial.cshtml" />  *@
+            <h2 class="font-bold text-lg mb-4">Sections/Categories</h2>
+            <ul>
+                <li class="mb-2">Category 1</li>
+                <li class="mb-2">Category 2</li>
+                <li class="mb-2">Category 3</li>
+                <li class="mb-2">Category 4</li>
+            </ul>
+        </div>
+
+        <div class="flex-grow p-4 transition-all duration-300">
+            <div class="p-4">
+                <h2 class="font-bold text-lg mb-4 dark:text-zinc-200">Commands</h2>
+                <div>
+                    <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
+                        Command 1
+                        <span class="flex items-center">
+                            <a href="#" class="mr-2">
+                                <img src="https://placehold.co/20x20" alt="edit" />
+                            </a>
+                            <a href="#">
+                                <img src="https://placehold.co/20x20" alt="run" />
+                            </a>
+                        </span>
+                    </div>
+                    <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg mt-2 shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
+                        Command 2
+                        <span class="flex items-center">
+                            <a href="#" class="mr-2">
+                                <img src="https://placehold.co/20x20" alt="edit" />
+                            </a>
+                            <a href="#">
+                                <img src="https://placehold.co/20x20" alt="run" />
+                            </a>
+                        </span>
+                    </div>
+                    <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg mt-2 shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
+                        Command 3
+                        <span class="flex items-center">
+                            <a href="#" class="mr-2">
+                                <img src="https://placehold.co/20x20" alt="edit" />
+                            </a>
+                            <a href="#">
+                                <img src="https://placehold.co/20x20" alt="run" />
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            @* <partial name="_CommandsPartial.cshtml" /> *@
+        </div>
+
+        <div class="flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
+            
+            <div class="tabs flex border-b">
+                <button class="tab tab-active font-bold py-2 px-4 rounded-t-lg bg-blue-500 text-white border-l border-t border-r border-zinc-300 dark:border-zinc-600" onclick="showTab('output')">
+                    Current
+                </button>
+                <button class="tab font-bold py-2 px-4 rounded-t-lg bg-white dark:bg-zinc-600 text-zinc-900 dark:text-white border-l border-t border-r border-zinc-300 dark:border-zinc-600"
+                        onclick="showTab('overview')">
+                    Overview
+                </button>
+            </div>
+
+
+            <div id="tab-container" class="tab-content mt-4">
+                @await Html.PartialAsync("_OutputOverviewPartial.cshtml")
+            </div>
+
+            <script>
+
+                var selectedTab = 'overview'
+
+                // valid id's: overview, output
+                function switchTab(tabId) {
+
+                    if (tabId !== "overview" && tabId !== "output") {
+                        console.error("Invalid tab id: " + tabId));
+                        return;
+                    }
+
+                    if (tabId === selectedTab) {
+                        return;
+                    })
+
+                    var tabContainer = document.getElementById('tab-container');
+                    var html = getHtml(tabId);
+                    tabContainer.innerHTML = html;
+                }
+
+                function getHtml(tabId) {
+
+                    if (tabId === "output") {
+                        return `@await Html.PartialAsync("_OutputCurrentPartial")`;
+                    }
+                    else if (tabId === "overview") {
+                        return `@await Html.PartialAsync("_OutputOverviewPartial")`;
+                    }
+                    else {
+                        console.error("No tab found for id: " + tabId);
+                        return "";
+                    });
+                }
+
+                // function showTab(tabId) {
+                //     document.getElementById('output').classList.add('hidden');
+                //     document.getElementById('overview').classList.add('hidden');
+                //     document.getElementById('output').classList.remove('active');
+                //     document.getElementById('overview').classList.remove('active');
+                //     document.getElementById(tabId).classList.remove('hidden');
+                //     document.getElementById(tabId).classList.add('active');
+                // }
+
+                const tabs = document.querySelectorAll('.tab');
+                const output = document.querySelector('.output');
+                const overview = document.querySelector('.overview');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => {
+                            t.classList.remove('tab-active');
+                            t.classList.remove('bg-blue-500', 'text-white');
+                            t.classList.add('bg-white', 'text-zinc-900');
+                        });
+                        tab.classList.add('tab-active', 'bg-blue-500', 'text-white');
+                        if (tab.textContent.trim() === 'Output') {
+                            output.classList.remove('hidden');
+                            overview.classList.add('hidden');
+                        } else {
+                            overview.classList.remove('hidden');
+                            output.classList.add('hidden');
+                        }
+                    });
+                });
+            </script>
+        </div>
+
+@*         <div class="transition-all duration-300 hover:bg-blue-500">
+            Hover over me
+        </div> *@
+    </div>
 </div>
