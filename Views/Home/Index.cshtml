@@ -11,7 +11,7 @@
         </div>
 
         <div class="main-container command-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
-            <partial name="_CommandModePartial.cshtml" />
+            <partial name="~/Views/Shared/_CommandModePartial.cshtml" />
         </div>
          
         <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
@@ -27,7 +27,7 @@
             </div>
 
             <div id="tab-container" class="tab-content mt-4">
-                @await Html.PartialAsync("_OutputOverviewPartial.cshtml")
+                @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml")
             </div>
 
         </div>
