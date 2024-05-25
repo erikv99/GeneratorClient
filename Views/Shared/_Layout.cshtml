@@ -7,19 +7,17 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GeneratorClient.styles.css" asp-append-version="true" />
+
 </head>
 <body>
     <header>
         <nav class=" container-fluid navbar bg-black black dark:bg-zinc-900 shadow-md py-4 px-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="~/images/gclogo.png" alt="Logo" class="mr-3" style="width: 40px; height: 40px;" />
+                    @* <img src="~/images/gclogo.png" alt="Logo" class="mr-3" style="width: 40px; height: 40px;" /> *@
                     <span class="text-xl font-bold dark:text-white">StableDiffusion Generator Client</span>
-                </div>
-                <div class="space-x-4">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </div>
             </div>
         </nav>
