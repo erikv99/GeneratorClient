@@ -6,8 +6,8 @@
     <div class="flex flex-row flex-grow">
         
         <div class="w-1/4 p-4 bg-neutral-700 dark:bg-zinc-700 transition-all duration-300">
-            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" href="#">Quick</a>
-            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" href="#">From config</a>
+            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" onclick="renderPartial('quick-mode')">Quick</a>
+            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" onclick="renderPartial('command-mode')">From config</a>
         </div>
 
         <div class="main-container command-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
@@ -17,11 +17,12 @@
         <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
 
             <div class="tabs flex border-b">
-                <button class="tab tab-active font-bold py-2 px-4 rounded-t-lg bg-blue-500 text-white border-l border-t border-r border-zinc-300 dark:border-zinc-600" onclick="switchTab('output')">
+                <button class="tab tab-active font-bold py-2 px-4 rounded-t-lg bg-blue-500 text-white border-l border-t border-r border-zinc-300 dark:border-zinc-600" 
+                    onclick="renderPartial('output-current')">
                     Current
                 </button>
                 <button class="tab font-bold py-2 px-4 rounded-t-lg dark:bg-zinc-600 text-zinc-900 dark:text-white border-l border-t border-r border-zinc-300 dark:border-zinc-600"
-                        onclick="switchTab('overview')">
+                    onclick="renderPartial('output-overview')">
                     Overview
                 </button>
             </div>

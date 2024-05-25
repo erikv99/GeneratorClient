@@ -59,7 +59,18 @@
                 return;
             }
 
-            var container = document.getElementById(key + "-partial-container");
+            console.log("Getting container for key: " + key + "-partial-container");
+            var container = document.querySelector("." + key + "-partial-container");
+            
+            if (!container) {
+                console.error("No container found for key: " + key);
+                return;
+            }
+            
+            if (document.querySelectorAll("." + key + "-partial-container").length > 1) {
+                console.error("Multiple containers found for key: " + key);
+                return;
+            }
 
             if (!container) {
                 console.error("No container to place partial result in found for key: " + key);
