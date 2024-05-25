@@ -4,57 +4,14 @@
 
 <div class="min-h-screen flex flex-col bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white transition-all duration-300">
     <div class="flex flex-row flex-grow">
+        
         <div class="w-1/4 p-4 bg-neutral-700 dark:bg-zinc-700 transition-all duration-300">
-            @* <partial name="_SectionsPartial.cshtml" />  *@
-            <h2 class="font-bold text-lg mb-4">Categories</h2>
-            <ul class="space-y-2">
-                <li class="p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200">Category 1</li>
-                <li class="p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200">Category 2</li>
-                <li class="p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200">Category 3</li>
-                <li class="p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200">Category 4</li>
-            </ul>
+            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" href="#">Quick</a>
+            <a class="flex p-2 bg-neutral-600 rounded-lg hover:bg-neutral-500 transition-colors duration-200" href="#">From config</a>
         </div>
 
-        <div class="main-container flex-grow p-4 transition-all duration-300">
-
-            <h2 class="ml-3 mb-5 font-bold text-lg mb-4 dark:text-zinc-200">Commands</h2>
-            <div class="space-y-2">
-                <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
-                    Command 1
-                    <span class="flex items-center">
-                        <a href="#" class="mr-2">
-                            <img src="https://placehold.co/20x20" alt="edit" />
-                        </a>
-                        <a href="#">
-                            <img src="https://placehold.co/20x20" alt="run" />
-                        </a>
-                    </span>
-                </div>
-                <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
-                    Command 2
-                    <span class="flex items-center">
-                        <a href="#" class="mr-2">
-                            <img src="https://placehold.co/20x20" alt="edit" />
-                        </a>
-                        <a href="#">
-                            <img src="https://placehold.co/20x20" alt="run" />
-                        </a>
-                    </span>
-                </div>
-                <div class="w-full flex justify-between items-center bg-zinc-800 hover:bg-zinc-900 text-zinc-100 font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200 dark:bg-zinc-700 dark:hover:bg-zinc-800">
-                    Command 3
-                    <span class="flex items-center">
-                        <a href="#" class="mr-2">
-                            <img src="https://placehold.co/20x20" alt="edit" />
-                        </a>
-                        <a href="#">
-                            <img src="https://placehold.co/20x20" alt="run" />
-                        </a>
-                    </span>
-                </div>
-            </div>
-
-            @* <partial name="_CommandsPartial.cshtml" /> *@
+        <div class="main-container command-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
+            <partial name="_CommandModePartial.cshtml" />
         </div>
          
         <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
@@ -69,54 +26,27 @@
                 </button>
             </div>
 
-
             <div id="tab-container" class="tab-content mt-4">
                 @await Html.PartialAsync("_OutputOverviewPartial.cshtml")
             </div>
 
-            <script>
-                var selectedTab = 'overview';
-
-                function switchTab(tabId) {
-                    if (tabId !== "overview" && tabId !== "output") {
-                        console.error("Invalid tab id: " + tabId);
-                        return;
-                    }
-
-                    if (tabId === selectedTab) {
-                        return;
-                    }
-
-                    var tabContainer = document.getElementById('tab-container');
-                    var html = getHtml(tabId);
-                    tabContainer.innerHTML = html;
-                    selectedTab = tabId;
-                }
-
-                function getHtml(tabId) {
-                    if (tabId === "output") {
-                        return `@await Html.PartialAsync("_OutputCurrentPartial.cshtml")`;
-                    } else if (tabId === "overview") {
-                        return `@await Html.PartialAsync("_OutputOverviewPartial.cshtml")`;
-                    } else {
-                        console.error("No tab found for id: " + tabId);
-                        return "";
-                    }
-                }
-
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        document.querySelectorAll('.tab').forEach(t => {
-                            t.classList.remove('tab-active', 'bg-blue-500', 'text-white');
-                            t.classList.add('bg-zinc-700', 'text-zinc-900');
-                        });
-                        tab.classList.add('tab-active', 'bg-blue-500', 'text-white');
-                    });
-                });
-            </script>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('tab-active', 'bg-blue-500', 'text-white');
+                t.classList.add('bg-zinc-700', 'text-zinc-900');
+            });
+            tab.classList.add('tab-active', 'bg-blue-500', 'text-white');
+        });
+    });
+</script>
 
 <style>
     .main-container {
