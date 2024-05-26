@@ -7,10 +7,14 @@ namespace GeneratorClient.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly GeneratorUplink _generatorUplink;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            GeneratorUplink generatorUplink)
         {
             _logger = logger;
+            _generatorUplink = generatorUplink;
         }
 
         public IActionResult Index()
@@ -20,6 +24,19 @@ namespace GeneratorClient.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> QuickRequest(GenerationSettings model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", model);
+            }
+
+            _generatorUplink.ConfigureSettings(model);
+            await _generatorUplink.SendRequestAsync();
             return View();
         }
 

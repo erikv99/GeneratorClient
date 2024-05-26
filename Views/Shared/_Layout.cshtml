@@ -41,13 +41,8 @@
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
-        // Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-        // for details on configuring this project to bundle and minify static web assets.
-
-        // Write your JavaScript code.
         var allowedKeys = ["output-current", "output-overview", "quick-mode", "config-mode"]
 
-        // key + "-container" should also be the html element id.
         function renderPartial(key) {
 
             var isValidKey = allowedKeys.find(k => k === key);
@@ -90,7 +85,7 @@
                 return `@await Html.PartialAsync("_OutputOverviewPartial.cshtml")`;
 
             } else if (key === "quick-mode") {
-                return `@await Html.PartialAsync("_QuickModePartial.cshtml")`;
+                return `@await Html.PartialAsync("_QuickModePartial.cshtml", new QuickRequestBindingModel())`;
 
             } else if (key === "config-mode") {
                 return `@await Html.PartialAsync("_ConfigModePartial.cshtml")`;
