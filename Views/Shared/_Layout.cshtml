@@ -24,7 +24,7 @@
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3 p-8" style="width: 99vw;">
+        <main role="main" id="render-body-container" class="pb-3 p-8" style="width: 99vw;">
             @RenderBody()
         </main>
     </div>
@@ -45,7 +45,7 @@
         // for details on configuring this project to bundle and minify static web assets.
 
         // Write your JavaScript code.
-        var allowedKeys = ["output-current", "output-overview", "quick-mode", "command-mode"]
+        var allowedKeys = ["output-current", "output-overview", "quick-mode", "config-mode"]
 
         // key + "-container" should also be the html element id.
         function renderPartial(key) {
@@ -58,7 +58,9 @@
             }
 
             console.log("Getting container for key: " + key + "-partial-container");
-            var container = document.querySelector("." + key + "-partial-container");
+
+            var partialContainer = document.querySelector("#render-body-container");
+            var container = partialContainer.querySelector("." + key + "-partial-container");
             
             if (!container) {
                 console.error("No container found for key: " + key);
@@ -90,8 +92,8 @@
             } else if (key === "quick-mode") {
                 return `@await Html.PartialAsync("_QuickModePartial.cshtml")`;
 
-            } else if (key === "command-mode") {
-                return `@await Html.PartialAsync("_CommandModePartial.cshtml")`;
+            } else if (key === "config-mode") {
+                return `@await Html.PartialAsync("_ConfigModePartial.cshtml")`;
 
             } else {
                 console.error("No html found for key: " + key);

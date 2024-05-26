@@ -4,21 +4,17 @@
 
 <div class="min-h-screen flex flex-col bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white transition-all duration-300">
     <div class="flex flex-row flex-grow">
-@* 
-        <div class="w-1/4 p-4 bg-neutral-700 dark:bg-zinc-700 transition-all duration-300">
-                <button type="button" class="btn-yellow" onclick="renderPartial('quick-mode')">Quick</button>
-                <button type="button" class="btn-yellow" onclick="renderPartial('command-mode')">From config</button>
-        </div> *@
-
         <aside id="default-sidebar w-1/4" class="" aria-label="Sidenav">
             <div class="pr-15 overflow-y-auto py-5 px-5 h-full bg-zinc-600 border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <ul class="space-y-2">
                     <li>
-                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                            onclick="renderPartial('config-mode');">
                             <i class="fa-solid fa-trowel-bricks flip-horizontal" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Configurations</span>
                         </a>
-                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                            onclick="renderPartial('quick-mode');">
                             <i class="fa-solid fa-walkie-talkie" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Quick</span>
                         </a>
@@ -31,23 +27,21 @@
             </div>
         </aside>
 
-        <div class="main-container command-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
-            <partial name="~/Views/Shared/_CommandModePartial.cshtml" />
+        <div class="main-container config-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
+            <partial name="~/Views/Shared/_ConfigModePartial.cshtml" />
         </div>
          
         <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
 
             <div class="tabs flex border-b">
-                <button class="tab tab-container tab-active bg-blue-500 text-white"
+                <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
                     onclick="renderPartial('output-current')">
                     Current
                 </button>
-                <a class=" tab tab-container dark:bg-zinc-600 text-zinc-900"
+                <button class="btn-yellow tab tab-container dark:bg-zinc-600 text-zinc-900"
                     onclick="renderPartial('output-overview')">
                     Overview
                 </button>
-
-                @* <button type="button" class="btn-yellow" onclick="renderPartial('command-mode')">From config</button> *@
             </div>
 
             <div id="tab-container" class="tab-container tab-content mt-4">
