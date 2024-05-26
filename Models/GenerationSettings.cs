@@ -21,4 +21,6 @@ public class GenerationSettings
     [Range(1, int.MaxValue, ErrorMessage = "Inference Steps must be a positive integer.")]
     [Display(Name = "Inference Steps")]
     public int InferenceSteps { get; set; } = 22;
+
+    public string EndpointUrl { get; set; } = "";
 }

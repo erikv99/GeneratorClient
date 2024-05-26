@@ -36,7 +36,9 @@ namespace GeneratorClient.Controllers
             }
 
             _generatorUplink.ConfigureSettings(model);
-            await _generatorUplink.SendRequestAsync();
+            var (_isGenerationSuccessful, _pathToImg) = await _generatorUplink.SendRequestAsync();
+            
+            // TODO setup view to display the image.
             return View();
         }
 
