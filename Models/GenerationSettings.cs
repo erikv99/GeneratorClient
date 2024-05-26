@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+namespace GeneratorClient.Models;
 
 public class GenerationSettings
 {

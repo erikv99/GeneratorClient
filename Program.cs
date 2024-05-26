@@ -1,11 +1,18 @@
+using GeneratorClient.Models;
+using GeneratorClient.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<GeneratorUplink>();
+var x = builder.Configuration.GetSection("GenerationSettings");
+
 builder.Services.Configure<GenerationSettings>(builder.Configuration.GetSection("GenerationSettings"));
 
+builder.Services.AddSingleton<GeneratorUplink>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

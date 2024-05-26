@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using GeneratorClient.Models;
+
+@{
+    var settings = new GenerationSettings();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -38,7 +44,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/969d13854d.js" crossorigin="anonymous"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false);
 
     <script>
         var allowedKeys = ["output-current", "output-overview", "quick-mode", "config-mode"]
@@ -79,16 +85,16 @@
         function getHtml(key) {
 
             if (key === "output-current") {
-                return `@await Html.PartialAsync("_OutputCurrentPartial.cshtml")`;
+                return await Html.PartialAsync("_OutputCurrentPartial.cshtml", "https://placehold.co/600x400");
 
             } else if (key === "output-overview") {
-                return `@await Html.PartialAsync("_OutputOverviewPartial.cshtml")`;
+                return await Html.PartialAsync("_OutputOverviewPartial.cshtml");
 
             } else if (key === "quick-mode") {
-                return `@await Html.PartialAsync("_QuickModePartial.cshtml", new QuickRequestBindingModel())`;
+                return await Html.PartialAsync("_QuickModePartial.cshtml", settings);
 
             } else if (key === "config-mode") {
-                return `@await Html.PartialAsync("_ConfigModePartial.cshtml")`;
+                return await Html.PartialAsync("_ConfigModePartial.cshtml");
 
             } else {
                 console.error("No html found for key: " + key);
