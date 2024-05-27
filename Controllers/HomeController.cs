@@ -31,6 +31,25 @@ namespace GeneratorClient.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Configurations() 
+        {
+            return PartialView("_ConfigurationModePartial.cshtml");
+        }
+
+        // Todo, naming is a bit weird, fix.
+        [HttpPost]
+        public async Task<IActionResult> OutputOverview() 
+        {
+            return PartialView("_OutputOverviewPartial.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OutputCurrent(string currentImageUrl = "https://placehold.co/600x400") 
+        {
+            return PartialView("_OutputCurrentPartial.cshtml", currentImageUrl);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> QuickRequest(GenerationSettings model)
         {
             var viewModel = new HomeVm
@@ -40,17 +59,18 @@ namespace GeneratorClient.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                return View("_QuickModePartial.cshtml", model);
             }
 
             _generatorUplink.ConfigureSettings(model);
+
             var (_isGenerationSuccessful, _pathToImg) = await _generatorUplink.SendRequestAsync();
             
             if (!_isGenerationSuccessful)
             {
                 ModelState.AddModelError(string.Empty, "Error generating image.");
                 _logger.LogError("Error generating image.");
-                return View(viewModel);
+                return View("_QuickModePartial.cshtml", model);
             }
 
             _logger.LogInformation("Image generated successfully at path {Path}", _pathToImg);
@@ -58,7 +78,7 @@ namespace GeneratorClient.Controllers
 
             // TODO save location and used setting to a log in the db.
 
-            return View(viewModel);
+            return PartialView("_QuickModePartial.cshtml", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

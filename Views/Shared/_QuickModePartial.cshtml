@@ -35,7 +35,7 @@
                     <span asp-validation-for="@Model.InferenceSteps" class="text-red-500"></span>
                 </div>
             </div>
-            <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+            <button type="submit" class="btn-yellow inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                 Generate
             </button>
         </form>
@@ -71,5 +71,12 @@ document.querySelector('form').addEventListener('submit', function(event) {
 <style>
     .b-lighter-gray {
         background-color: #3f3f46;
+    }
+
+    .generate-button {
+        width: 25%;
+        justify-content: center;
+        margin-right: auto;
+        margin-left: auto;
     }
 </style>

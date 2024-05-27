@@ -12,19 +12,19 @@
                 <ul class="space-y-2">
                     <li>
                         <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            onclick="renderPartial('quick-mode');">
+                            asp-action="QuickRequest" asp-controller="Home" asp-route-settings="@Model.GenerationSettings">
                             <i class="fa-solid fa-walkie-talkie" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Quick</span>
                         </a>
                         <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            onclick="renderPartial('config-mode');">
+                            asp-action="Configurations" asp-controller="Home">
                             <i class="fa-solid fa-trowel-bricks flip-horizontal" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Configurations</span>
                         </a>
-                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        @* <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <i class="fa-solid fa-truck-fast" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Fire and forget</span> 
-                        </a>
+                        </a> *@
                     </li>
                 </ul>
             </div>
@@ -37,23 +37,50 @@
         <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
 
             <div class="tabs flex border-b">
-                <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
-                    onclick="renderPartial('output-current')">
-                    Current
-                </button>
-                <button class="btn-yellow tab tab-container dark:bg-zinc-600 text-zinc-900"
-                    onclick="renderPartial('output-overview')">
-                    Overview
-                </button>
+                <div class="tabs flex border-b">
+                    <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
+                            id="currentButton"
+                            data-url="@Url.Action("OutputCurrent", "Home", new { currentImageUrl = Model.ImageUrl })">
+                        Current
+                    </button>
+                    <button class="btn-yellow tab tab-container dark:bg-zinc-600 text-zinc-900"
+                            id="overviewButton"
+                            data-url="@Url.Action("OutputOverview", "Home")">
+                        Overview
+                    </button>
+                </div>
+                <br />
+                <div id="output-container" class="tab-container tab-content mt-4">
+                    @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml", @Model.ImageUrl)
+                </div>
+                    
             </div>
-
-            <div id="tab-container" class="tab-container tab-content mt-4">
-                @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml", @Model.ImageUrl)
-            </div>
-
         </div>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#currentButton, #overviewButton").on('click', function(e) {
+            e.preventDefault();
+
+            var url = $(this).data("url");
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $("#output-container").html(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading partial view: ", status, error);
+                    $("#output-container").html("<p>An error occurred while loading the content. Please try again.</p>");
+                }
+            });
+        });
+    });
+</script>
 
 <script>
     document.querySelectorAll('.tab').forEach(tab => {
