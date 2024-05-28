@@ -30,23 +30,23 @@ namespace GeneratorClient.Controllers
             });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Configurations() 
+        [HttpGet]
+        public async Task<IActionResult> Configurations()
         {
-            return PartialView("_ConfigurationModePartial.cshtml");
+            return PartialView("~/Views/Shared/_ConfigModePartial.cshtml");
         }
 
         // Todo, naming is a bit weird, fix.
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> OutputOverview() 
         {
-            return PartialView("_OutputOverviewPartial.cshtml");
+            return PartialView("~/Views/Shared/_OutputOverviewPartial.cshtml");
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> OutputCurrent(string currentImageUrl = "https://placehold.co/600x400") 
         {
-            return PartialView("_OutputCurrentPartial.cshtml", currentImageUrl);
+            return PartialView("~/Views/Shared/_OutputCurrentPartial.cshtml", currentImageUrl);
         }
 
         [HttpPost]
@@ -59,7 +59,7 @@ namespace GeneratorClient.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View("_QuickModePartial.cshtml", model);
+                return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
             }
 
             _generatorUplink.ConfigureSettings(model);
@@ -70,7 +70,7 @@ namespace GeneratorClient.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Error generating image.");
                 _logger.LogError("Error generating image.");
-                return View("_QuickModePartial.cshtml", model);
+                return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
             }
 
             _logger.LogInformation("Image generated successfully at path {Path}", _pathToImg);
@@ -78,7 +78,7 @@ namespace GeneratorClient.Controllers
 
             // TODO save location and used setting to a log in the db.
 
-            return PartialView("_QuickModePartial.cshtml", model);
+            return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

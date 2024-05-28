@@ -12,7 +12,7 @@
                 <ul class="space-y-2">
                     <li>
                         <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            asp-action="QuickRequest" asp-controller="Home" asp-route-settings="@Model.GenerationSettings">
+                             >
                             <i class="fa-solid fa-walkie-talkie" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Quick</span>
                         </a>
@@ -30,30 +30,26 @@
             </div>
         </aside>
 
-        <div class="main-container config-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
+        <div id="quick-mode-container" class="main-container config-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
             @await Html.PartialAsync("~/Views/Shared/_QuickModePartial.cshtml", @Model.GenerationSettings)
         </div>
          
-        <div class="main-container w-full  flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
-
+        <div class="main-container w-full flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
             <div class="tabs flex border-b">
-                <div class="tabs flex border-b">
-                    <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
-                            id="currentButton"
-                            data-url="@Url.Action("OutputCurrent", "Home", new { currentImageUrl = Model.ImageUrl })">
-                        Current
-                    </button>
-                    <button class="btn-yellow tab tab-container dark:bg-zinc-600 text-zinc-900"
-                            id="overviewButton"
-                            data-url="@Url.Action("OutputOverview", "Home")">
-                        Overview
-                    </button>
-                </div>
-                <br />
-                <div id="output-container" class="tab-container tab-content mt-4">
-                    @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml", @Model.ImageUrl)
-                </div>
-                    
+                <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
+                        id="currentButton"
+                        data-url="@Url.Action("OutputCurrent", "Home", new { currentImageUrl = Model.ImageUrl })">
+                    Current
+                </button>
+                <button class="btn-yellow tab tab-container dark:bg-zinc-600 text-zinc-900"
+                        id="overviewButton"
+                        data-url="@Url.Action("OutputOverview", "Home")">
+                    Overview
+                </button>
+            </div>
+            <br />
+            <div id="output-container" class="tab-container tab-content mt-4">
+                @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml", @Model.ImageUrl)
             </div>
         </div>
     </div>
@@ -80,6 +76,8 @@
             });
         });
     });
+
+        // asp-action="QuickRequest" asp-controller="Home" asp-route-settings="@Model.GenerationSettings
 </script>
 
 <script>

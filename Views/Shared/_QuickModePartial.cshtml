@@ -1,13 +1,9 @@
 ﻿@model GenerationSettings
 
-@{
-    ViewData["Title"] = "Quick Mode";
-
-}
 <section class="">
     <div class="py-2 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-white dark:text-white">Generate</h2>
-        <form asp-action="QuickRequest">
+        <form id="quick-request-form">
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <div class="sm:col-span-2">
                     <label asp-for="@Model.Prompt" class="block mb-2 text-sm font-medium text-white dark:text-white">Prompt</label>
@@ -35,7 +31,9 @@
                     <span asp-validation-for="@Model.InferenceSteps" class="text-red-500"></span>
                 </div>
             </div>
-            <button type="submit" class="btn-yellow inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+            <button 
+                type="submit" 
+                class="btn-yellow inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                 Generate
             </button>
         </form>
@@ -43,7 +41,7 @@
 </section>
 
 <script>
-document.querySelector('form').addEventListener('submit', function(event) {
+document.querySelector('#quick-request-form').addEventListener('submit', function(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
@@ -57,6 +55,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
+                document.getElementById('config-mode-container').innerHTML = xhr.responseText;
                 console.log("Response: ", response);
             } else {
                 alert("Error: " + xhr.statusText);
