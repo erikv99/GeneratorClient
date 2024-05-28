@@ -11,29 +11,28 @@
             <div class="pr-15 overflow-y-auto py-5 px-5 h-full bg-zinc-600 border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <ul class="space-y-2">
                     <li>
-                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                             >
+                        <a id="quick-mode-btn"
+                           data-url="@Url.Action("QuickMode", "Home")"
+                           class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <i class="fa-solid fa-walkie-talkie" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Quick</span>
+
                         </a>
-                        <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            asp-action="Configurations" asp-controller="Home">
+                        <a id="config-mode-btn" 
+                            data-url="@Url.Action("ConfigurationsMode", "Home")" 
+                            class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <i class="fa-solid fa-trowel-bricks flip-horizontal" style="color: antiquewhite;"></i>
                             <span class="ml-3" style="color: antiquewhite;">Configurations</span>
                         </a>
-                        @* <a class="btn-yellow flex items-center p-2 text-base font-normal text-white rounded-lg dark:text-gray hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <i class="fa-solid fa-truck-fast" style="color: antiquewhite;"></i>
-                            <span class="ml-3" style="color: antiquewhite;">Fire and forget</span> 
-                        </a> *@
                     </li>
                 </ul>
             </div>
         </aside>
 
-        <div id="quick-mode-container" class="main-container config-mode-partial-container quick-mode-partial-container flex-grow p-4 transition-all duration-300">
+        <div id="mode-partial-container" class="main-container flex-grow p-4 transition-all duration-300">
             @await Html.PartialAsync("~/Views/Shared/_QuickModePartial.cshtml", @Model.GenerationSettings)
         </div>
-         
+
         <div class="main-container w-full flex-grow p-4 bg-zinc-200 dark:bg-zinc-700 transition-all duration-300">
             <div class="tabs flex border-b">
                 <button class="btn-yellow tab tab-container tab-active bg-blue-500 text-white"
@@ -48,7 +47,7 @@
                 </button>
             </div>
             <br />
-            <div id="output-container" class="tab-container tab-content mt-4">
+            <div id="output-partial-container" class="tab-container tab-content mt-4">
                 @await Html.PartialAsync("~/Views/Shared/_OutputCurrentPartial.cshtml", @Model.ImageUrl)
             </div>
         </div>
@@ -58,29 +57,50 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-        $("#currentButton, #overviewButton").on('click', function(e) {
-            e.preventDefault();
 
-            var url = $(this).data("url");
-
+        function loadOutputPartialView(url) {
             $.ajax({
                 url: url,
                 type: 'GET',
                 success: function(data) {
-                    $("#output-container").html(data);
+                    document.getElementById("output-partial-container").innerHTML = data;
                 },
                 error: function(xhr, status, error) {
                     console.error("Error loading partial view: ", status, error);
-                    $("#output-container").html("<p>An error occurred while loading the content. Please try again.</p>");
+                    document.getElementById("output-container").innerHTML = "<p>An error occurred while loading the content. Please try again.</p>";
                 }
             });
+        }
+
+        function loadModePartialView(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    document.getElementById("mode-partial-container").innerHTML = data;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading partial view: ", status, error);
+                    document.getElementById("mode-partial-container").innerHTML = "<p>An error occurred while loading the content. Please try again.</p>";
+                }
+            });
+        }
+
+        $("#currentButton, #overviewButton").on('click', function(e) {
+
+            e.preventDefault();
+            var url = $(this).data("url");
+            loadOutputPartialView(url);
+        });
+
+        $("#quick-mode-btn, #config-mode-btn").on('click', function(e) {
+
+            e.preventDefault();
+            var url = $(this).data("url");
+            loadModePartialView(url);
         });
     });
 
-        // asp-action="QuickRequest" asp-controller="Home" asp-route-settings="@Model.GenerationSettings
-</script>
-
-<script>
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.tab').forEach(t => {

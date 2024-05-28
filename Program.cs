@@ -8,8 +8,6 @@ builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var x = builder.Configuration.GetSection("GenerationSettings");
-
 builder.Services.Configure<GenerationSettings>(builder.Configuration.GetSection("GenerationSettings"));
 
 builder.Services.AddSingleton<GeneratorUplink>();

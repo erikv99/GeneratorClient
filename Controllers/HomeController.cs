@@ -6,21 +6,14 @@ using System.Diagnostics;
 
 namespace GeneratorClient.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(
+        ILogger<HomeController> logger,
+        GeneratorUplink generatorUplink,
+        IOptions<GenerationSettings> settingsFromConfig) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly GeneratorUplink _generatorUplink;
-        private readonly GenerationSettings _settingsFromConfig;
-
-        public HomeController(
-            ILogger<HomeController> logger,
-            GeneratorUplink generatorUplink,
-            IOptions<GenerationSettings> settingsFromConfig)
-        {
-            _logger = logger;
-            _generatorUplink = generatorUplink;
-            _settingsFromConfig = settingsFromConfig.Value;
-        }
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly GeneratorUplink _generatorUplink = generatorUplink;
+        private readonly GenerationSettings _settingsFromConfig = settingsFromConfig.Value;
 
         public IActionResult Index()
         {
@@ -31,22 +24,28 @@ namespace GeneratorClient.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Configurations()
+        public IActionResult ConfigurationsMode()
         {
             return PartialView("~/Views/Shared/_ConfigModePartial.cshtml");
         }
 
         // Todo, naming is a bit weird, fix.
         [HttpGet]
-        public async Task<IActionResult> OutputOverview() 
+        public IActionResult OutputOverview()
         {
             return PartialView("~/Views/Shared/_OutputOverviewPartial.cshtml");
         }
 
         [HttpGet]
-        public async Task<IActionResult> OutputCurrent(string currentImageUrl = "https://placehold.co/600x400") 
+        public IActionResult OutputCurrent(string currentImageUrl)
         {
             return PartialView("~/Views/Shared/_OutputCurrentPartial.cshtml", currentImageUrl);
+        }
+
+        [HttpGet]
+        public IActionResult QuickMode()
+        {
+            return PartialView("~/Views/Shared/_QuickModePartial.cshtml", _settingsFromConfig);
         }
 
         [HttpPost]
