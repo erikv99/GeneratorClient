@@ -19,11 +19,10 @@ public class GeneratorUplink(
 
     private GenerationSettings? _settings;
 
-    public void ConfigureSettings(GenerationSettings settings)
+    public void Configure(GenerationSettings settings)
     {
         _settings = settings;
     }
-
 
     public async Task<(bool Success, string? ImageUrl)> SendRequestAsync()
     {
@@ -36,6 +35,8 @@ public class GeneratorUplink(
         var json = JsonSerializer.Serialize(_settings);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         HttpResponseMessage response;
+
+        // TODO: Refactor if satisfied with the current implementation.
 
         try
         {

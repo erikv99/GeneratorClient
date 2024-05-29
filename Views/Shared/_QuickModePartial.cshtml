@@ -40,33 +40,6 @@
     </div>
 </section>
 
-<script>
-document.querySelector('#quick-request-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const formData = new FormData(event.target);
-    console.log("Formdata: ", formData);
-    
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/Home/QuickRequest', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                document.getElementById('config-mode-container').innerHTML = xhr.responseText;
-                console.log("Response: ", response);
-            } else {
-                alert("Error: " + xhr.statusText);
-            }
-        }
-    };
-    xhr.send(new URLSearchParams(formData).toString());
-});
-</script>
-
-
 <style>
     .b-lighter-gray {
         background-color: #3f3f46;

@@ -51,33 +51,30 @@ namespace GeneratorClient.Controllers
         [HttpPost]
         public async Task<IActionResult> QuickRequest(GenerationSettings model)
         {
-            var viewModel = new HomeVm
-            {
-                GenerationSettings = model,
-            };
-
             if (!ModelState.IsValid)
             {
-                return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
+                return BadRequest(new 
+                { 
+                    error = "Invalid model state." 
+                });
             }
 
-            _generatorUplink.ConfigureSettings(model);
+            _generatorUplink.Configure(model);
 
             var (_isGenerationSuccessful, _pathToImg) = await _generatorUplink.SendRequestAsync();
-            
+
             if (!_isGenerationSuccessful)
             {
-                ModelState.AddModelError(string.Empty, "Error generating image.");
-                _logger.LogError("Error generating image.");
-                return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
+                return BadRequest(new
+                {
+                    error = "Image generation did not indicate success."
+                });
             }
 
-            _logger.LogInformation("Image generated successfully at path {Path}", _pathToImg);
-            viewModel.ImageUrl = _pathToImg;
-
-            // TODO save location and used setting to a log in the db.
-
-            return PartialView("~/Views/Shared/_QuickModePartial.cshtml", model);
+            return Ok(new 
+            { 
+                path = _pathToImg ?? ""
+            });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

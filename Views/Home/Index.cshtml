@@ -56,18 +56,17 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
-
+    $(document).ready(function () {
         function loadOutputPartialView(url) {
             $.ajax({
                 url: url,
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     document.getElementById("output-partial-container").innerHTML = data;
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error loading partial view: ", status, error);
-                    document.getElementById("output-container").innerHTML = "<p>An error occurred while loading the content. Please try again.</p>";
+                    document.getElementById("output-partial-container").innerHTML = "<p>An error occurred while loading the content. Please try again.</p>";
                 }
             });
         }
@@ -86,15 +85,13 @@
             });
         }
 
-        $("#currentButton, #overviewButton").on('click', function(e) {
-
+        $("#currentButton, #overviewButton").on('click', function (e) {
             e.preventDefault();
             var url = $(this).data("url");
             loadOutputPartialView(url);
         });
 
-        $("#quick-mode-btn, #config-mode-btn").on('click', function(e) {
-
+        $("#quick-mode-btn, #config-mode-btn").on('click', function (e) {
             e.preventDefault();
             var url = $(this).data("url");
             loadModePartialView(url);
@@ -109,6 +106,72 @@
             });
             tab.classList.add('tab-active', 'bg-blue-500', 'text-white');
         });
+    });
+
+    document.querySelector('#quick-request-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        fetch('/Home/QuickRequest', {
+            method: 'POST',
+            body: new URLSearchParams(formData),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error: " + data.error);
+                    console.log("Error: ", data.error);
+                } else {
+                    const imageUrl = data.path;
+                    console.log("Image URL: ", imageUrl);
+
+                    var partialUrl = `/Home/OutputCurrent?currentImageUrl=${encodeURIComponent(imageUrl)}`;
+                    loadOutputPartialView(partialUrl);
+                }
+            })
+            .catch(error => {
+                alert("An error occurred: " + error.message);
+                console.log("Fetch error: ", error);
+            });
+    });
+
+
+</script>
+
+<script>
+    document.querySelector('#quick-request-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        fetch('/Home/QuickRequest', {
+            method: 'POST',
+            body: new URLSearchParams(formData),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error: " + data.error);
+                    console.log("Error: ", data.error);
+                } else {
+                    const imageUrl = data.path;
+                    console.log("Image URL: ", imageUrl);
+
+                    document.getElementById("output-partial-container").innerHTML = 
+                    // Example: document.getElementById('image-container').src = imageUrl;
+                }
+            })
+            .catch(error => {
+                alert("An error occurred: " + error.message);
+                console.log("Fetch error: ", error);
+            });
     });
 </script>
 
