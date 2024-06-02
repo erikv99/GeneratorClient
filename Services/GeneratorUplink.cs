@@ -66,7 +66,7 @@ public class GeneratorUplink(
         _ensureFolderExists(outputFolderPath);
 
         var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-        var imagePath = Path.Combine(outputFolderPath, $"generation-{timestamp}.png");
+        var imagePath = Path.Combine("\\" + outputFolderPath, $"generation-{timestamp}.png");
 
         await File.WriteAllBytesAsync(imagePath, imageBytes);
         _logger.LogInformation("Image saved to {ImagePath}", imagePath);
