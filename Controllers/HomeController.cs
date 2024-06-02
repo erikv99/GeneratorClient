@@ -59,6 +59,8 @@ namespace GeneratorClient.Controllers
                 });
             }
 
+            // TODO: Remmove when we add endpoint to settings page or something similar.
+            model.EndpointUrl = _settingsFromConfig.EndpointUrl;
             _generatorUplink.Configure(model);
 
             var (_isGenerationSuccessful, _pathToImg) = await _generatorUplink.SendRequestAsync();

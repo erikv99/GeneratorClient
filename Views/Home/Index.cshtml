@@ -164,8 +164,8 @@
                     const imageUrl = data.path;
                     console.log("Image URL: ", imageUrl);
 
-                    document.getElementById("output-partial-container").innerHTML = 
-                    // Example: document.getElementById('image-container').src = imageUrl;
+                    document.getElementById("output-partial-container")
+                        .innerHTML = '<div class="tab-pane active"><img class="rounded-lg shadow-lg" src="' + imageUrl + '"></img></div>'
                 }
             })
             .catch(error => {

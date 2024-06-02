@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Ignore appsettings.Local.json
 appsettings.Local.json
+
+output/
