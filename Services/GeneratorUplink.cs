@@ -61,12 +61,16 @@ public class GeneratorUplink(
         }
 
         var imageBytes = await response.Content.ReadAsByteArrayAsync();
-        var outputFolderPath = "output";
 
-        _ensureFolderExists(outputFolderPath);
+        var baseDir = Environment.CurrentDirectory;
+        _logger.LogInformation("Base directory: {BaseDir}", baseDir);
+
+        var fullOutputFolderPath = Path.Combine(baseDir, "output");
+
+        _ensureFolderExists(fullOutputFolderPath);
 
         var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-        var imagePath = Path.Combine("\\" + outputFolderPath, $"generation-{timestamp}.png");
+        var imagePath = Path.Combine(fullOutputFolderPath, $"generation-{timestamp}.png");
 
         await File.WriteAllBytesAsync(imagePath, imageBytes);
         _logger.LogInformation("Image saved to {ImagePath}", imagePath);
@@ -83,3 +87,76 @@ public class GeneratorUplink(
     }
 
 }
+
+
+    // The aproach above wont work since images can be served from local storage, 
+    // left this broken here so I instantly notice next time.
+# TODO build in local db for saving output images and serving them to in the view
+
+
+[HttpPost]
+public async Task<IActionResult> UploadImage(IFormFile file)
+{
+    if (file != null && file.Length > 0)
+    {
+        using (var dataStream = new MemoryStream())
+        {
+            await file.CopyToAsync(dataStream);
+            var image = new Image
+            {
+                ImageData = dataStream.ToArray(),
+                ContentType = file.ContentType
+            };
+
+            _context.Images.Add(image);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    return RedirectToAction("Index");
+}
+
+public class Image
+{
+    public int Id { get; set; }
+    public byte[] ImageData { get; set; }
+    public string ContentType { get; set; }
+}
+
+[HttpPost]
+public async Task<IActionResult> UploadImage(IFormFile file)
+{
+    if (file != null && file.Length > 0)
+    {
+        using (var dataStream = new MemoryStream())
+        {
+            await file.CopyToAsync(dataStream);
+            var image = new Image
+            {
+                ImageData = dataStream.ToArray(),
+                ContentType = file.ContentType
+            };
+
+            _context.Images.Add(image);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    return RedirectToAction("Index");
+}
+
+
+[HttpGet]
+public async Task<IActionResult> GetImage(int id)
+{
+    var image = await _context.Images.FindAsync(id);
+    if (image != null)
+    {
+        return File(image.ImageData, image.ContentType);
+    }
+    return NotFound();
+}
+
+
+
+TODODO ODO DODO D

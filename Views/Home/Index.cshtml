@@ -108,39 +108,13 @@
         });
 
         document.querySelector('#quick-request-form').addEventListener('submit', function (event) {
+            
             event.preventDefault();
-
-            const formData = new FormData(event.target);
-
-            fetch('/Home/QuickRequest', {
-                method: 'POST',
-                body: new URLSearchParams(formData),
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert("Error: " + data.error);
-                        console.log("Error: ", data.error);
-                    } else {
-                        const imageUrl = data.path;
-                        console.log("Image URL: ", imageUrl);
-
-                        var partialUrl = `/Home/OutputCurrent?currentImageUrl=${encodeURIComponent(imageUrl)}`;
-                        loadOutputPartialView(partialUrl);
-                    }
-                })
-                .catch(error => {
-                    alert("An error occurred: " + error.message);
-                    console.log("Fetch error: ", error);
-                });
-        });
-
-        document.querySelector('#quick-request-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-
+            
+            var submitButton = document.getElementById('generate-submit-button');
+            submitButton.innerHTML = 'Generating...';
+            submitButton.disabled = true; 
+        
             const formData = new FormData(event.target);
 
             fetch('/Home/QuickRequest', {
@@ -152,9 +126,17 @@
             })
             .then(response => response.json())
             .then(data => {
+
+                submitButton.innerHTML = 'Generate';
+                submitButton.disabled = false;
+
+                console.log("Response: ", data);
+
                 if (data.error) {
+
                     alert("Error: " + data.error);
                     console.log("Error: ", data.error);
+                
                 } else {
                     const imageUrl = data.path;
                     console.log("Image URL: ", imageUrl);
@@ -166,6 +148,8 @@
             .catch(error => {
                 alert("An error occurred: " + error.message);
                 console.log("Fetch error: ", error);
+                submitButton.innerHTML = 'Generate';
+                submitButton.disabled = false;
             });
         });
     });
