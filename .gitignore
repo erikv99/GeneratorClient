@@ -366,3 +366,4 @@ FodyWeavers.xsd
 appsettings.Local.json
 
 output/
+.vscode/settings.json

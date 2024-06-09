@@ -3,6 +3,8 @@ namespace GeneratorClient.Models;
 
 public class GenerationSettings
 {
+    public int? Id { get; set; }
+
     [Required(ErrorMessage = "Prompt is required.")]
     [Display(Name = "Prompt")]
     public string Prompt { get; set; } = "";
@@ -24,4 +26,6 @@ public class GenerationSettings
     public int InferenceSteps { get; set; } = 22;
 
     public string EndpointUrl { get; set; } = "";
+
+    public List<GenerationRequest>? Requests { get; set; }
 }

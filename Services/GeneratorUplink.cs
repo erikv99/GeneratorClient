@@ -8,9 +8,11 @@ namespace GeneratorClient.Services;
 public class GeneratorUplink(
     ILogger<GeneratorUplink> logger,
     IOptions<GenerationSettings> settingsFromConfig,
-    IHttpClientFactory httpClientFactory)
+    IHttpClientFactory httpClientFactory,
+    MainDbContext dbContext)
 {
     private readonly ILogger<GeneratorUplink> _logger = logger;
+    private readonly MainDbContext _dbContext = dbContext;
     private readonly GenerationSettings _settingsFromConfig = settingsFromConfig.Value;
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient();
 
@@ -24,19 +26,29 @@ public class GeneratorUplink(
         _settings = settings;
     }
 
-    public async Task<(bool Success, string? ImageUrl)> SendRequestAsync()
+    public async Task<GenerationResponse> SendRequestAsync()
     {
+        // TODO: Add timing for request/ response.
+
+        var generationResponse = new GenerationResponse
+        {
+            CreatedOn = DateTime.Now,
+            Success = false
+        };
+
         if (_settings == null)
         {
-            // TODO, friendler handling of empty settings.
-            throw new InvalidOperationException("Settings must be configured before sending a request.");
+            generationResponse.ErrorMessage = "Settings must be configured before sending a request.";
+            return generationResponse;
         }
 
         var json = JsonSerializer.Serialize(_settings);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        HttpResponseMessage response;
 
-        // TODO: Refactor if satisfied with the current implementation.
+        var settings = await _saveSettingsToDbAsync(_settings);
+        var request = await _saveRequestToDbAsync(settings);
+
+        HttpResponseMessage response;
 
         try
         {
@@ -44,119 +56,105 @@ public class GeneratorUplink(
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error sending request to endpoint {Endpoint}", _settingsFromConfig.EndpointUrl);
-            return (false, null);
+            _logger.LogError(ex, "Error sending request to endpoint.");
+            return _returnErrorResponse("Error sending request to endpoint, see logs for more information.");
         }
 
-        if (response == null) {
-            _logger.LogError("Request to endpoint {Endpoint} failed, response is null.", _settingsFromConfig.EndpointUrl);
-            return (false, null);
+        if (response == null)
+        {
+            _logger.LogError("Request to endpoint failed, response is null.");
+            return _returnErrorResponse("Request to endpoint failed, response is null.");
         }
-        
+
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Request to endpoint {Endpoint} failed with status code {StatusCode}", 
-                _settingsFromConfig.EndpointUrl, response.StatusCode);
-            return (false, null);
+            _logger.LogError($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode}");
+            return _returnErrorResponse($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode}");
         }
 
         var imageBytes = await response.Content.ReadAsByteArrayAsync();
 
-        var baseDir = Environment.CurrentDirectory;
-        _logger.LogInformation("Base directory: {BaseDir}", baseDir);
+        if (imageBytes == null || imageBytes.Length == 0)
+        {
+            _logger.LogError("Received empty image bytes.");
+            return _returnErrorResponse("Received empty image bytes.");
+        }
 
-        var fullOutputFolderPath = Path.Combine(baseDir, "output");
+        var image = await _saveImageToDbAsync(imageBytes);
 
-        _ensureFolderExists(fullOutputFolderPath);
+        generationResponse.Success = true;
+        generationResponse.Image = image;
+        generationResponse.Request = request;
 
-        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-        var imagePath = Path.Combine(fullOutputFolderPath, $"generation-{timestamp}.png");
-
-        await File.WriteAllBytesAsync(imagePath, imageBytes);
-        _logger.LogInformation("Image saved to {ImagePath}", imagePath);
-
-        return (true, imagePath);
+        generationResponse = await _saveResponseToDbAsync(generationResponse);
+        return generationResponse;
     }
 
-    private void _ensureFolderExists(string folderPath)
+    private async Task<GenerationResponse> _saveResponseToDbAsync(GenerationResponse generationResponse)
     {
-        if (!Directory.Exists(folderPath))
+        _dbContext.Set<GenerationResponse>()
+            .Add(generationResponse);
+
+        await _dbContext.SaveChangesAsync();
+
+        return generationResponse;
+    }
+
+    private async Task<Image> _saveImageToDbAsync(byte[] imageBytes)
+    {
+        var image = new Image()
         {
-            Directory.CreateDirectory(folderPath);
+            Bytes = imageBytes
+        };
+
+        _dbContext.Set<Image>()
+            .Add(image);
+
+        await _dbContext.SaveChangesAsync();
+
+        return image;
+    }
+
+    private GenerationResponse _returnErrorResponse(string errorMessage)
+    {
+        return new GenerationResponse
+        {
+            CreatedOn = DateTime.Now,
+            Success = false,
+            ErrorMessage = errorMessage
+        };
+    }
+
+    private async Task<GenerationRequest> _saveRequestToDbAsync(GenerationSettings settings)
+    {
+        var request = new GenerationRequest
+        {
+            CreatedOn = DateTime.Now,
+            Settings = settings
+        };
+
+        _dbContext.Set<GenerationRequest>()
+            .Add(request);
+
+        await _dbContext.SaveChangesAsync();
+            
+        return request;
+    }
+
+    private async Task<GenerationSettings> _saveSettingsToDbAsync(GenerationSettings settings)
+    {
+        try 
+        {
+            _dbContext.Set<GenerationSettings>()
+                .Add(settings);
+
+            await _dbContext.SaveChangesAsync();
+            return settings;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error saving settings to database.");
+            return settings;
         }
     }
-
 }
-
-
-    // The aproach above wont work since images can be served from local storage, 
-    // left this broken here so I instantly notice next time.
-# TODO build in local db for saving output images and serving them to in the view
-
-
-[HttpPost]
-public async Task<IActionResult> UploadImage(IFormFile file)
-{
-    if (file != null && file.Length > 0)
-    {
-        using (var dataStream = new MemoryStream())
-        {
-            await file.CopyToAsync(dataStream);
-            var image = new Image
-            {
-                ImageData = dataStream.ToArray(),
-                ContentType = file.ContentType
-            };
-
-            _context.Images.Add(image);
-            await _context.SaveChangesAsync();
-        }
-    }
-
-    return RedirectToAction("Index");
-}
-
-public class Image
-{
-    public int Id { get; set; }
-    public byte[] ImageData { get; set; }
-    public string ContentType { get; set; }
-}
-
-[HttpPost]
-public async Task<IActionResult> UploadImage(IFormFile file)
-{
-    if (file != null && file.Length > 0)
-    {
-        using (var dataStream = new MemoryStream())
-        {
-            await file.CopyToAsync(dataStream);
-            var image = new Image
-            {
-                ImageData = dataStream.ToArray(),
-                ContentType = file.ContentType
-            };
-
-            _context.Images.Add(image);
-            await _context.SaveChangesAsync();
-        }
-    }
-
-    return RedirectToAction("Index");
-}
-
-
-[HttpGet]
-public async Task<IActionResult> GetImage(int id)
-{
-    var image = await _context.Images.FindAsync(id);
-    if (image != null)
-    {
-        return File(image.ImageData, image.ContentType);
-    }
-    return NotFound();
-}
-
-
-
-TODODO ODO DODO D

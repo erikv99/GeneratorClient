@@ -1,17 +1,12 @@
 using GeneratorClient.Models;
 using GeneratorClient.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.Configure<GenerationSettings>(builder.Configuration.GetSection("GenerationSettings"));
-
-builder.Services.AddSingleton<GeneratorUplink>();
-builder.Services.AddHttpClient();
+_configureServices(builder);
 
 var app = builder.Build();
 
@@ -27,7 +22,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-
 app.UseRouting();
 
 app.UseAuthorization();
@@ -37,3 +31,22 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void _configureServices(WebApplicationBuilder builder)
+{
+    builder.Services.AddControllersWithViews();
+
+    builder.Services.Configure<GenerationSettings>(builder.Configuration.GetSection("GenerationSettings"));
+
+    var dataSourcePath = Path.Join(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "MainDbContext.db");
+
+    builder.Services.AddDbContext<MainDbContext>(options =>
+        options.UseSqlite($"Data Source={dataSourcePath}"),
+        ServiceLifetime.Scoped);
+
+    builder.Services.AddScoped<GeneratorUplink>();
+
+    builder.Services.AddHttpClient();
+}

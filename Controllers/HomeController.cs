@@ -53,30 +53,26 @@ namespace GeneratorClient.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new 
-                { 
-                    error = "Invalid model state." 
-                });
+                return BadRequest(new { error = "Invalid model state." });
             }
 
             // TODO: Remmove when we add endpoint to settings page or something similar.
             model.EndpointUrl = _settingsFromConfig.EndpointUrl;
             _generatorUplink.Configure(model);
 
-            var (_isGenerationSuccessful, _pathToImg) = await _generatorUplink.SendRequestAsync();
+            var response = await _generatorUplink.SendRequestAsync();
 
-            if (!_isGenerationSuccessful)
+            if (!response.Success) 
             {
-                return BadRequest(new
-                {
-                    error = "Image generation did not indicate success."
-                });
+                return BadRequest(new { error = response.ErrorMessage ?? "Unknown error." });
             }
 
-            return Ok(new 
-            { 
-                path = _pathToImg ?? ""
-            });
+            if (response.Image == null)
+            {
+                return BadRequest(new { error = "No image returned." });
+            }
+
+            return File(response.Image.Bytes, "image/png");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
