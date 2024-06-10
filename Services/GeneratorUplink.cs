@@ -57,7 +57,7 @@ public class GeneratorUplink(
         catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "Error sending request to endpoint.");
-            return _returnErrorResponse("Error sending request to endpoint, see logs for more information.");
+            return _returnErrorResponse($"Error sending request to endpoint, see logs for more information. Exception message: {ex.Message}");
         }
 
         if (response == null)
@@ -68,8 +68,8 @@ public class GeneratorUplink(
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode}");
-            return _returnErrorResponse($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode}");
+            _logger.LogError($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode} and reason phrase {response.ReasonPhrase}");
+            return _returnErrorResponse($"Request to endpoint {_settingsFromConfig.EndpointUrl} failed with status code {response.StatusCode} and reason phrase {response.ReasonPhrase}");
         }
 
         var imageBytes = await response.Content.ReadAsByteArrayAsync();
