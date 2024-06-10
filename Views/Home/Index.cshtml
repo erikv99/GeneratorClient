@@ -112,6 +112,7 @@
             event.preventDefault();
             
             var submitButton = document.getElementById('generate-submit-button');
+            
             submitButton.innerHTML = 'Generating...';
             submitButton.disabled = true; 
         
@@ -124,33 +125,28 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(response => {
+                
+                if (!response.ok) {
 
+                    return response.json().then(data => {
+                    
+                        throw new Error(data.error || 'Unknown error occurred.');
+                    });
+                }
+
+                return response.blob();
+            })
+            .then(blob => {
+
+                const imageUrl = URL.createObjectURL(blob);
+                document.getElementById("output-partial-container").innerHTML = 
+                    '<div class="tab-pane active"><img class="rounded-lg shadow-lg" src="' + imageUrl + '"></img></div>';
                 submitButton.innerHTML = 'Generate';
                 submitButton.disabled = false;
-
-                console.log("Response: ", data);
-
-                if (data.error) {
-
-
-                dadasda TODO : handle the new response format
-
-
-
-                    alert("Error: " + data.error);
-                    console.log("Error: ", data.error);
-                
-                } else {
-                    const imageUrl = data.path;
-                    console.log("Image URL: ", imageUrl);
-
-                    document.getElementById("output-partial-container")
-                        .innerHTML = '<div class="tab-pane active"><img class="rounded-lg shadow-lg" src="' + imageUrl + '"></img></div>';
-                }
             })
             .catch(error => {
+
                 alert("An error occurred: " + error.message);
                 console.log("Fetch error: ", error);
                 submitButton.innerHTML = 'Generate';
